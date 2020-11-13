@@ -1,6 +1,13 @@
-#Documentation for storing: https://download.huihoo.com/google/gdgdevkit/DVD1/developers.google.com/appengine/docs/python/datastore.html
-#Documentation for query: https://cloud.google.com/appengine/docs/standard/python/datastore/queryclass
-#Documentation for delete: https://www.programcreek.com/python/example/75158/google.appengine.ext.db.delete
+#Project ID: rtp-webapp
+#By: Manuel Sudermann
+
+#Google Cloud Platform - App Engine - WebApp using Python27 and db datastore
+
+#Documentation
+ #for storing: https://download.huihoo.com/google/gdgdevkit/DVD1/developers.google.com/appengine/docs/python/datastore.html
+ #for query: https://cloud.google.com/appengine/docs/standard/python/datastore/queryclass
+ #for delete: https://www.programcreek.com/python/example/75158/google.appengine.ext.db.delete
+ #for edits: https://www.oreilly.com/library/view/programming-google-app/9780596157517/ch04.html
 
 ############################## Imports + Init Start ####################################
 from google.appengine.ext import db
@@ -105,7 +112,7 @@ def home():
 @app.route("/handle_add", methods=['POST'])
 def handle_add():
     person_name = request.form['person_name']
-    py_add_person(person_name)
+    add_person(person_name) #add py_ in front of method name to run python method
     return redirect("/", code=302)
 
 @app.route("/handle_delete_or_edit", methods=['POST']) #reacts to actions within html form
@@ -115,10 +122,10 @@ def handle_delete_or_edit():
     action = button[0: len(button)-1: 1] #removes last char (index) from string to compare
 
     if(action == "delete_entry"):
-        py_delete_by_index(button_index)
+        delete_by_index(button_index) #add py_ in front of method name to run python method
     if(action == "edit_entry"):
         new_person_name = request.form['new_person_name'] #grab user input for new name
-        py_edit_name_at_index(button_index, new_person_name)
+        edit_name_at_index(button_index, new_person_name) #add py_ in front of method name to run python method
     return redirect("/", code=302)
 if __name__ == '__main__':
     app.run(debug=True)
