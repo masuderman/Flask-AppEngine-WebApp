@@ -3,8 +3,12 @@
 #Documentation for delete: https://www.programcreek.com/python/example/75158/google.appengine.ext.db.delete
 
 from google.appengine.ext import db
+from flask import Flask, render_template, request
 
-class Person(db.Model):
+app = Flask(__name__)
+
+#Database Model
+class Person(db.Model): #A simple model to familiarize myself with Datastore and Google App Engine
     name = db.StringProperty(required=True)
 
 #start ADD entry 
@@ -29,3 +33,6 @@ def delete_by_name(person_name):
     Person.delete(person)
 #stop DELETE entry
 
+#start of Flask code
+if __name__ == '__main__':
+    app.run(debug=True)
