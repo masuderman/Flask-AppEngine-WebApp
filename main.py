@@ -102,6 +102,7 @@ def py_edit_name_at_index(index, new_name):
 
 ############################## Python Placeholder Functions Stop #######################
 
+############################## Flask Code Start ########################################
 #start of Flask code
 
 @app.route("/")
@@ -129,3 +130,5 @@ def handle_delete_or_edit():
     return redirect("/", code=302)
 if __name__ == '__main__':
     app.run(debug=True)
+
+############################## Flask Code Stop #########################################
