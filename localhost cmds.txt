@@ -1,0 +1,4 @@
+cd D:\GitHub\Flask-App-Engine-WebApp
+set FLASK_APP=main.py
+set FLASK_DEBUG=1
+flask run

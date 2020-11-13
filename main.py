@@ -4,7 +4,7 @@
 
 ############################## Imports + Init Start ####################################
 from google.appengine.ext import db
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 ############################## Imports + Init Stop #####################################
@@ -75,13 +75,41 @@ def py_delete_by_name(person_name):
         if person.name == person_name:
             persons.pop(count)
         count += 1
+
+def py_edit_name_at_index(index, new_name):
+    count = 0
+    person_list = persons
+    for person in person_list:
+        if count == index:
+            person_list[count]  = {'name': new_name}
+        count += 1
+
 ############################## Python Placeholder Functions Stop #######################
 
 #start of Flask code
 
 @app.route("/")
+@app.route("/home")
 def home():
-    return "Hello World!"
+    return render_template('home.html',persons=persons)
 
+@app.route("/handle_add", methods=['POST'])
+def handle_add():
+    person_name = request.form['person_name']
+    py_add_person(person_name)
+    return redirect("/", code=302)
+
+@app.route("/handle_delete_or_edit", methods=['POST']) #reacts to actions within html form
+def handle_delete_or_edit():
+    button = request.form['modify_button'] #grabs value from button
+    button_index = int(button[-1:]) #takes last char of button value to find index
+    action = button[0: len(button)-1: 1] #removes last char (index) from string to compare
+
+    if(action == "delete_entry"):
+        py_delete_by_index(button_index)
+    if(action == "edit_entry"):
+        new_person_name = request.form['new_person_name'] #grab user input for new name
+        py_edit_name_at_index(button_index, new_person_name)
+    return redirect("/", code=302)
 if __name__ == '__main__':
     app.run(debug=True)
