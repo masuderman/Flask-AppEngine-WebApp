@@ -42,6 +42,15 @@ def delete_by_index(index):
 def delete_by_name(person_name):
     person = get_by_name(person_name)
     Person.delete(person)
+
+def edit_name_at_index(index, new_name):
+    person_list = get_list(Person)
+    count = 0
+    for person in person_list:
+        if count == index:
+            person.name = new_name
+        count += 1
+
 #stop DELETE entry
 ############################## App Engine Functions Stop ###############################
 
