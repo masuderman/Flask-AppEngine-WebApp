@@ -1,7 +1,7 @@
 #Project ID: rtp-webapp
 #By: Manuel Sudermann
 
-#Google Cloud Platform - App Engine - WebApp using Python27 and db datastore
+#Google Cloud Platform - Standard App Engine - WebApp using Python27 and ndb datastore
 
 #Documentation
  #for storing: https://download.huihoo.com/google/gdgdevkit/DVD1/developers.google.com/appengine/docs/python/datastore.html
@@ -9,8 +9,11 @@
  #for delete: https://www.programcreek.com/python/example/75158/google.appengine.ext.db.delete
  #for edits: https://www.oreilly.com/library/view/programming-google-app/9780596157517/ch04.html
 
+
+
 ############################## Imports + Init Start ####################################
-from google.appengine.ext import db
+import logging
+from google.appengine.ext import ndb
 from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
@@ -18,102 +21,74 @@ app = Flask(__name__)
 
 ############################## App Engine Functions Start ##############################
 #Database Model
-class Person(db.Model): #A simple model to familiarize myself with Datastore and Google App Engine
-    name = db.StringProperty(required=True)
+class Person(ndb.Model): 
+    name = ndb.StringProperty(required=True)
 
-#start ADD entry 
-def add_person(person_name): #pass string
-    person = Person(name=person_name) 
-    db.put(person) #puts entity with passed attributes
-#stop ADD entry
+#__NDB functions to store, retrieve, edit, and delete__
+#start ADD
+def add_person(person_name):
+    person = Person(name=person_name)
+    person.put()
+#stop ADD
 
-#start GET entry
-def get_list(person_model): #literally pass db.Model name "Person"
-    q = db.Query(person_model)
-    return q #q is like list and can iterate using for loop
-
-def get_by_name(person_name):
-    person = Person.get(person_name)
+#start GET
+def get_person_by_name(person_name):
+    query = Person.query(Person.name == person_name)
+    person = query.fetch()
     return person
-#stop GET entry
 
-#start DELETE entry
-def delete_by_index(index):
-    person_list = get_list(Person)
+def get_all_persons():
+    all_persons = Person.query().fetch()
+    return all_persons
+
+def get_person_by_index(index):
+    all_persons = get_all_persons()
     count = 0
-    for person in person_list:
+    for person in all_persons:
         if count == index:
-            Person.delete(person)
+            return person
         count += 1
+#stop GET
 
-def delete_by_name(person_name):
-    person = get_by_name(person_name)
-    Person.delete(person)
-
-def edit_name_at_index(index, new_name):
-    person_list = get_list(Person)
+#start EDIT
+def edit_person_name_at_index(index, new_name):
+    all_persons = get_all_persons()
     count = 0
-    for person in person_list:
+    for person in all_persons:
         if count == index:
             person.name = new_name
         count += 1
+#stop EDIT
 
-#stop DELETE entry
+#start DELETE
+def delete_person_by_name(person_name):
+    person = get_person_by_name(person_name)
+    person.key.delete()
+
+def delete_person_by_index(index):
+    all_persons = get_all_persons()
+    count = 0
+    for person in all_persons:
+        if count == index:
+            person.key.delete()
+        count += 1
+#stop DELETE
+
 ############################## App Engine Functions Stop ###############################
 
-############################## Python Placeholder Functions Start ######################
-persons = [{'name': 'Jack Bauer'},{'name': 'James Ford'},{'name': 'Charlie Pace'}]
-
-def py_add_person(person_name):
-    persons.append({'name': person_name})
-
-def py_get_list(person_model):
-    return persons
-
-def py_get_by_name(person_name):
-    count = 0
-    for person in persons:
-        if person.name == person_name:
-            return persons[count]
-        count += 1
-
-def py_delete_by_index(index):
-    person_list = persons
-    count = 0
-    for person in person_list:
-        if count == index:
-            person_list.pop(count)
-        count += 1
-
-def py_delete_by_name(person_name):
-    count = 0
-    for person in persons:
-        if person.name == person_name:
-            persons.pop(count)
-        count += 1
-
-def py_edit_name_at_index(index, new_name):
-    count = 0
-    person_list = persons
-    for person in person_list:
-        if count == index:
-            person_list[count]  = {'name': new_name}
-        count += 1
-
-############################## Python Placeholder Functions Stop #######################
-
 ############################## Flask Code Start ########################################
-#start of Flask code
 
+#app starts here and displays all entries within database
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html',persons=persons)
+    return render_template('home.html',persons=get_all_persons())
 
+#if fields are filled out and add button is pushed
 @app.route("/handle_add", methods=['POST'])
 def handle_add():
     person_name = request.form['person_name']
-    add_person(person_name) #add py_ in front of method name to run python method
+    add_person(person_name) 
     return redirect("/", code=302)
 
 @app.route("/handle_delete_or_edit", methods=['POST']) #reacts to actions within html form
@@ -123,12 +98,17 @@ def handle_delete_or_edit():
     action = button[0: len(button)-1: 1] #removes last char (index) from string to compare
 
     if(action == "delete_entry"):
-        delete_by_index(button_index) #add py_ in front of method name to run python method
+        delete_person_by_index(button_index) 
     if(action == "edit_entry"):
         new_person_name = request.form['new_person_name'] #grab user input for new name
-        edit_name_at_index(button_index, new_person_name) #add py_ in front of method name to run python method
+        edit_person_name_at_index(button_index, new_person_name) 
     return redirect("/", code=302)
-if __name__ == '__main__':
-    app.run(debug=True)
+
+#Handle errors
+@app.errorhandler(500)
+def server_error(e):
+    #Log the error and stacktrace
+    logging.exception('An error occurred during a request. Error: ' + e)
+    return 'An internal error occurred.', 500
 
 ############################## Flask Code Stop #########################################

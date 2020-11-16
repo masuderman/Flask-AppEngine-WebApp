@@ -1,0 +1,16 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+# [START handlers]
+handlers:
+- url: /templates/home.html
+  static_files: templates/home.html
+  upload: Templates/home.html
+
+- url: /templates
+  static_dir: templates
+
+- url: /.*
+  script: rtp-webapp.wsgi.application
+# [END handlers]

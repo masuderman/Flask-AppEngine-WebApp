@@ -1,0 +1,8 @@
+Flask==1.1.2
+Werkzeug==1.0.1
+gunicorn==19.10.0
+google-api-python-client==1.7.10
+google-cloud-ndb==0.0.1
+google-cloud-storage==1.17.0
+google-cloud-datastore==1.15.3
+

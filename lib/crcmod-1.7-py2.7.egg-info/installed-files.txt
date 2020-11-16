@@ -1,0 +1,14 @@
+..\crcmod\__init__.py
+..\crcmod\__init__.pyc
+..\crcmod\_crcfunpy.py
+..\crcmod\_crcfunpy.pyc
+..\crcmod\crcmod.py
+..\crcmod\crcmod.pyc
+..\crcmod\predefined.py
+..\crcmod\predefined.pyc
+..\crcmod\test.py
+..\crcmod\test.pyc
+PKG-INFO
+SOURCES.txt
+dependency_links.txt
+top_level.txt
