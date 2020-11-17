@@ -4,13 +4,10 @@
         <form action="{{ url_for('handle_delete_or_edit') }}" method="post">
             <h4>{{ loop.index }}. {{ person.name }}</h4>
             <button type="submit" name="modify_button" value="delete_entry{{ loop.index0 }}">Delete</button>
-            
-            <div id="hidden_edit_div" class="hidden">
-                <br>
-                <p>Edit entry here:</p>
-                <input type="text" name="new_person_name" placeholder="Enter new full name..." />
-                <button type="submit" name="modify_button" value="edit_entry{{ loop.index0 }}">Save Edit</button>
-            </div>
+            <br>
+            <p>Edit entry here:</p>
+            <input type="text" name="new_person_name" placeholder="Enter new full name..." />
+            <button type="submit" name="modify_button" value="edit_entry{{ loop.index0 }}">Save Edit</button>
             <hr>
         </form>
     {% endfor %}

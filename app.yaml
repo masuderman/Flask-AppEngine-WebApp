@@ -4,13 +4,25 @@ threadsafe: true
 
 # [START handlers]
 handlers:
-- url: /templates/home.html
-  static_files: templates/home.html
-  upload: Templates/home.html
+- url: /
+  script: main.app
 
-- url: /templates
-  static_dir: templates
+- url: /templates/home.html
+  script: main.app
+
+#- url: /templates
+#  static_dir: templates
+
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
 
 - url: /.*
-  script: rtp-webapp.wsgi.application
+  script: main.app
 # [END handlers]
+
+# [START] libraries
+libraries:
+- name: flask
+  version: 0.12
+# [END] libraries
